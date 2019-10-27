@@ -13,8 +13,8 @@ class Square extends React.Component {
 
     render() {
         return (
-            <button className="square" onClick={() => this.setState({value: this.props.value})}>
-                {this.state.value}
+            <button className="square" onClick={() => this.props.onClick()}>
+                {this.props.value}
             </button>
         );
     }
@@ -23,12 +23,35 @@ class Square extends React.Component {
 }
 
 class Board extends React.Component {
+    constructor(props){
+        super(props);
+        this.state = {
+            squares: Array(9).fill(null),
+            xIsNext: true,
+            value: 'X',
+        }
+    }
     renderSquare(i) {
-        return <Square value={i}/>;
+        return (
+            <Square
+            value={this.state.squares[i]}
+            onClick={() => this.handleClick(i)}
+            />);
+    }
+
+    handleClick(i){
+        const squares = this.state.squares.slice();
+        squares[i] = this.state.value;
+        if (this.state.xIsNext) {
+            this.setState({xIsNext: false, value: 'O'})
+        } else {
+            this.setState({xIsNext: true, value: 'X'})
+        }
+        this.setState({squares: squares});
     }
 
     render() {
-        const status = 'Next player: X';
+        const status = 'Next player: ' + this.state.value;
 
         return (
             <div>
